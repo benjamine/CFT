@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package >
+    <metadata>
+        <id>$id$</id>
+        <version>$version$</version>
+        <title>$title$</title>
+        <authors>$author$</authors>
+        <owners>$author$</owners>
+        <projectUrl>https://github.com/BlogTalkRadio/CFT</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>$description$</description>
+        <copyright>Copyright 2013</copyright>
+        <tags>CFT Config Transformation Publishing</tags>
+    </metadata>
+    <files>
+        <!-- console app -->
+        <file src="bin\Debug\cft.exe" target="tools"/>
+        <file src="bin\Debug\cft.exe.config" target="tools"/>
+        <file src="bin\Debug\Microsoft.Web.Publishing.Tasks.Dll" target="tools"/>
+    </files>
+</package>
