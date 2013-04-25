@@ -59,7 +59,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="CFT.nuspec" />
+    <None Include="CFT.nuspec">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="content\cft.ps1" />
     <None Include="tools\Init.ps1" />
   </ItemGroup>
   <ItemGroup>
