@@ -2,16 +2,16 @@
 
 $global:cftPath = Join-Path $toolsPath "cft"
 
-function global:CFT {
+function global:ConfigTransform {
     [CmdletBinding()]
     param(
         [parameter(ValueFromPipelineByPropertyName = $true)]
-        [string]$configurationName
+        [string]$Configuration
     )
     Process {
         $project = Get-Project
-        $outputPath = Join-Path $project.Properties.Item("LocalPath").Value $project.ConfigurationManager.ActiveConfiguration.Properties.Item("OutputPath").Value
-        $command = $cftPath + " $outputPath $configurationName"
+        $projectPath = $project.Properties.Item("LocalPath").Value
+        $command = $cftPath + " $projectPath $Configuration"
         echo $command
         Invoke-Expression $command
     }

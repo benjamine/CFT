@@ -82,7 +82,7 @@ namespace BlogTalkRadio.Tools.CFT
         {
             // log to console by default
             Trace.AutoFlush = true;
-            Trace.Listeners.Add(new ConsoleTraceListener(true));
+            Trace.Listeners.Add(new ConsoleTraceListener());
 
             new Program().Run(args);
         }

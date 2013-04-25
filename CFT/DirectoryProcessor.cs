@@ -62,7 +62,7 @@ namespace BlogTalkRadio.Tools.CFT
 
         public void PerformTransformations(string configurationName)
         {
-            Trace.TraceInformation("Starting Transformation Process at {0} with {1} configuration settings", BaseDirectory, configurationName);
+            Trace.TraceInformation("Starting Transformation Process at {0} with {1} configuration", BaseDirectory, configurationName);
 
             foreach (var originalFile in GetConfigFiles())
             {
@@ -99,7 +99,7 @@ namespace BlogTalkRadio.Tools.CFT
 
                 ReplaceTokensInFile(destinationFileTemp, configurationName);
 
-                var destinationFileRelative = destinationFile.Substring(DestinationDirectory.Length);
+                var destinationFileRelative = destinationFile.Substring(Path.GetFullPath(DestinationDirectory).Length);
                 if (!ReplaceWithTempIfChanged(destinationFileTemp, destinationFile))
                 {
                     Trace.TraceInformation("Unchanged: {0}.", destinationFileRelative);
@@ -181,7 +181,7 @@ namespace BlogTalkRadio.Tools.CFT
             foreach (var originalFile in GetConfigFiles())
             {
                 string destinationFile = originalFile.Replace(ConventionFileExtension, ".");
-                var destinationFileRelative = destinationFile.Substring(DestinationDirectory.Length);
+                var destinationFileRelative = destinationFile.Substring(Path.GetFullPath(DestinationDirectory).Length);
                 if (!File.Exists(destinationFile))
                 {
                     File.WriteAllText(destinationFile, string.Empty);
