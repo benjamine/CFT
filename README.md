@@ -27,3 +27,7 @@ These tokens will be replaced at the end of transformation:
 
  - ```$configurationName$```: the configuration name used to transform
  - ```$env:VARIABLE_NAME$```: an environment variable
+
+## Nuget
+
+Install as a nuget package: https://nuget.org/packages/cft/
