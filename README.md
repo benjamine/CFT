@@ -6,17 +6,20 @@ CFT
 ## Usage
 
 ``` powershell
-    # create empty files if they don't exist
-    cft BaseDirectory/
-
     # transform using a configuration name
-    cft BaseDirectory/ Production
+    cft transform /path=. /configuration=Production
 
     # cascade transformation are supported (will apply Production, and then Production-Amazon if found)
-    cft BaseDirectory/ Production-Amazon
+    cft transform /path=. /configuration=Production-Amazon
 
-    # use a different destination
-    cft BaseDirectory/ Production DestinationDirectory/
+    # dry run, doesn't touch files and throws an error if a file would be changed
+    cft transform /path=. /configuration=Production /dry
+
+    # get configuration name from different sources (priority is: parameter, file, env, default)
+    cft transform /path=.  /configurationFile=configurationName.tmp /configurationEnv=CONFIGURATIONNAME /configurationDefault=Local
+
+    # Run without params to see help
+    cft
 ```
 
 This tool will find all *.default.config files recursively and apply corresponding transformations when found.
@@ -32,23 +35,5 @@ These tokens will be replaced at the end of transformation:
 
 Install as a nuget package: https://nuget.org/packages/cft/
 
-cft.ps1 will be added to your project, in order to distribute it with your app Include it on the project and Copy to Output.
-
-This script can be added to your prebuild event and/or run on your post-deploy tasks. It will find cft.exe on /packages folder or locally and allows you to obtain the configuration name from different sources.
-
-``` powershell
-    # transform config files in the project using Production configuration name
-    .\cft.ps1 Production
-
-    # transform config files in all projects
-    .\cft.ps1 Production -Path ~\..
-
-    # transform config files using configuration name obtained from a file
-    .\cft.ps1 -ConfigurationNameFile configurationName.tmp
-
-    # transform config files using configuration name obtained from an env variable
-    .\cft.ps1 -ConfigurationNameEnv CONFIGURATIONNAME
-
-    # transform config files with fallback thru different sources (file, env, default)
-    .\cft.ps1 -ConfigurationNameFile configurationName.tmp -ConfigurationNameEnv CONFIGURATIONNAME -ConfigurationNameDefault LocalW
-```
+To run this tool on prebuild event or on post-deploy, you'll need to find /packages/cft.x.x.x.x/ path.
+To make that easy you can install [NugetToolsHelper](https://nuget.org/packages/NugetToolHelper/) package

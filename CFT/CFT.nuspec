@@ -2,12 +2,12 @@
 <package >
     <metadata>
         <id>CFT</id>
-        <version>1.0.0.6</version>
+        <version>1.0.0.9</version>
         <authors>BlogTalkRadio</authors>
         <owners>beidelman</owners>
         <projectUrl>https://github.com/BlogTalkRadio/CFT</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <description>Config File Transfomartion Tool</description>
+        <description>Config File Transfomation Tool</description>
         <copyright>Copyright 2013</copyright>
         <tags>CFT Config Transformation Tool Publishing</tags>
         <dependencies>
@@ -18,9 +18,6 @@
         <file src="bin\Debug\cft.exe" target="tools"/>
         <file src="bin\Debug\cft.exe.config" target="tools"/>
         <file src="bin\Debug\Microsoft.Web.Publishing.Tasks.Dll" target="tools"/>
-
-        <!-- powershell scripts -->
-        <file src="tools\Init.ps1" target="tools" />
-        <file src="content\cft.ps1" target="content" />
+        <file src="bin\Debug\CLAP.dll" target="tools"/>
     </files>
 </package>

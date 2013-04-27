@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CLAP">
+      <HintPath>..\packages\CLAP.4.3\lib\net35\CLAP.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Web.Publishing.Tasks, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>lib\Microsoft.Web.Publishing.Tasks.Dll</HintPath>
@@ -45,25 +48,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App.cs" />
     <Compile Include="ClrFileEnumerator.cs" />
+    <Compile Include="ConfigurationNameResolver.cs" />
     <Compile Include="Conventions.cs" />
-    <Compile Include="CSharpTest\Check.cs" />
-    <Compile Include="CSharpTest\FindFile.cs" />
     <Compile Include="DirectoryProcessor.cs" />
     <Compile Include="IFileEnumerator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TraceTransformationLogger.cs" />
     <Compile Include="TransformationTask.cs" />
-    <Compile Include="Win32FileEnumerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="CFT.nuspec">
       <SubType>Designer</SubType>
     </None>
-    <None Include="content\cft.ps1" />
-    <None Include="tools\Init.ps1" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <None Include="publishing\Microsoft.Web.Publishing.Tasks.Dll" />

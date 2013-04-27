@@ -8,13 +8,28 @@ namespace BlogTalkRadio.Tools.CFT
 {
     public class DirectoryProcessor
     {
-        private readonly IEnumerable<IFileEnumerator> _fileEnumerators = new IFileEnumerator[] { new Win32FileEnumerator(), new ClrFileEnumerator() };
+        public class DryRunFailedException : Exception
+        {
+            public string FilenameThatWouldChange { get; private set; }
+
+            public DryRunFailedException(string filenameThatWouldChange)
+                :base("Dry run failed. This file should change: " + filenameThatWouldChange)
+            {
+                FilenameThatWouldChange = filenameThatWouldChange;
+            }
+        }
+
+        private readonly IEnumerable<IFileEnumerator> _fileEnumerators = new IFileEnumerator[] { new ClrFileEnumerator() };
 
         private readonly Regex _envTokenRegex = new Regex(@"\$env\:([a-z0-9\-_\.]+)\$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         public DirectoryProcessor(string baseDirectory, string destinationDirectory)
         {
             BaseDirectory = baseDirectory;
+            if (string.IsNullOrWhiteSpace(BaseDirectory))
+            {
+                BaseDirectory = ".";
+            }
 
             if (!BaseDirectory.EndsWith("\\"))
                 BaseDirectory += "\\";
@@ -60,7 +75,7 @@ namespace BlogTalkRadio.Tools.CFT
             throw new Exception("All the file enumerators failed to retrieve files");
         }
 
-        public void PerformTransformations(string configurationName)
+        public void PerformTransformations(string configurationName, bool dry = false)
         {
             Trace.TraceInformation("Starting Transformation Process at {0} with {1} configuration", BaseDirectory, configurationName);
 
@@ -100,7 +115,7 @@ namespace BlogTalkRadio.Tools.CFT
                 ReplaceTokensInFile(destinationFileTemp, configurationName);
 
                 var destinationFileRelative = destinationFile.Substring(Path.GetFullPath(DestinationDirectory).Length);
-                if (!ReplaceWithTempIfChanged(destinationFileTemp, destinationFile))
+                if (!ReplaceWithTempIfChanged(destinationFileTemp, destinationFile, dry))
                 {
                     Trace.TraceInformation("Unchanged: {0}.", destinationFileRelative);
                 }
@@ -125,23 +140,37 @@ namespace BlogTalkRadio.Tools.CFT
             }
         }
 
-        private bool ReplaceWithTempIfChanged(string fileTemp, string file)
+        private bool ReplaceWithTempIfChanged(string fileTemp, string file, bool dry = false)
         {
-            if (!File.Exists(file))
+            try
             {
-                File.Move(fileTemp, file);
-                return true;
+                if (!File.Exists(file))
+                {
+                    if (dry)
+                    {
+                        throw new DryRunFailedException(file);
+                    }
+                    File.Move(fileTemp, file);
+                    return true;
+                }
+                var fileInfo = new FileInfo(file);
+                var fileTempInfo = new FileInfo(fileTemp);
+                if (fileInfo.Length != fileTempInfo.Length || File.ReadAllText(file) != File.ReadAllText(fileTemp))
+                {
+                    if (dry)
+                    {
+                        throw new DryRunFailedException(file);
+                    }
+                    File.Copy(fileTemp, file, true);
+                    File.Delete(fileTemp);
+                    return true;
+                }
+                return false;
             }
-            var fileInfo = new FileInfo(file);
-            var fileTempInfo = new FileInfo(fileTemp);
-            if (fileInfo.Length != fileTempInfo.Length || File.ReadAllText(file) != File.ReadAllText(fileTemp))
+            finally
             {
-                File.Copy(fileTemp, file, true);
                 File.Delete(fileTemp);
-                return true;
             }
-            File.Delete(fileTemp);
-            return false;
         }
 
         private bool PerformTransform(string sourceFile, string transformFile, string destinationFile)
@@ -174,7 +203,7 @@ namespace BlogTalkRadio.Tools.CFT
             return output;
         }
 
-        public void CreateEmptyDestinationFiles()
+        public void CreateEmptyDestinationFiles(bool dry = false)
         {
             Trace.TraceInformation("Creating Empty Destination Files at {0}", BaseDirectory);
 
@@ -184,6 +213,10 @@ namespace BlogTalkRadio.Tools.CFT
                 var destinationFileRelative = destinationFile.Substring(Path.GetFullPath(DestinationDirectory).Length);
                 if (!File.Exists(destinationFile))
                 {
+                    if (dry)
+                    {
+                        throw new DryRunFailedException(destinationFile);
+                    }
                     File.WriteAllText(destinationFile, string.Empty);
                     Trace.TraceInformation("Created: {0}", destinationFileRelative);
                 }
