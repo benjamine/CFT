@@ -94,7 +94,7 @@ namespace BlogTalkRadio.Tools.CFT
                     foreach (string part in configurationName.Split(new[] { Conventions.Default.NameSeparator }, StringSplitOptions.RemoveEmptyEntries))
                     {
                         newSolutionConfigFile += part + Conventions.Default.NameSeparator;
-                        var transformationName = newSolutionConfigFile.Substring(0, newSolutionConfigFile.Length - Conventions.Default.NameSeparator.Length);
+                        var transformationName = Path.GetFullPath(newSolutionConfigFile).Substring(0, newSolutionConfigFile.Length - Conventions.Default.NameSeparator.Length);
                         string transformFile = originalFile.Replace(ConventionFileExtension, "." + transformationName + ".");
                         if (PerformTransform(sourceFile, transformFile, destinationFileTemp))
                         {
@@ -114,7 +114,7 @@ namespace BlogTalkRadio.Tools.CFT
 
                 ReplaceTokensInFile(destinationFileTemp, configurationName);
 
-                var destinationFileRelative = destinationFile.Substring(Path.GetFullPath(DestinationDirectory).Length);
+                var destinationFileRelative = Path.GetFullPath(destinationFile).Substring(Path.GetFullPath(DestinationDirectory).Length);
                 if (!ReplaceWithTempIfChanged(destinationFileTemp, destinationFile, dry))
                 {
                     Trace.TraceInformation("Unchanged: {0}.", destinationFileRelative);
@@ -210,7 +210,7 @@ namespace BlogTalkRadio.Tools.CFT
             foreach (var originalFile in GetConfigFiles())
             {
                 string destinationFile = originalFile.Replace(ConventionFileExtension, ".");
-                var destinationFileRelative = destinationFile.Substring(Path.GetFullPath(DestinationDirectory).Length);
+                var destinationFileRelative = Path.GetFullPath(destinationFile).Substring(Path.GetFullPath(DestinationDirectory).Length);
                 if (!File.Exists(destinationFile))
                 {
                     if (dry)
