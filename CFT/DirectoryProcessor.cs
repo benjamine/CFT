@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace BlogTalkRadio.Tools.CFT
@@ -89,16 +90,22 @@ namespace BlogTalkRadio.Tools.CFT
 
                 if (configurationName.Contains(Conventions.Default.NameSeparator))
                 {
-                    var newSolutionConfigFile = string.Empty;
-
+                    StringBuilder transformationName = null;
                     foreach (string part in configurationName.Split(new[] { Conventions.Default.NameSeparator }, StringSplitOptions.RemoveEmptyEntries))
                     {
-                        newSolutionConfigFile += part + Conventions.Default.NameSeparator;
-                        var transformationName = Path.GetFullPath(newSolutionConfigFile).Substring(0, newSolutionConfigFile.Length - Conventions.Default.NameSeparator.Length);
-                        string transformFile = originalFile.Replace(ConventionFileExtension, "." + transformationName + ".");
+                        if (transformationName == null)
+                        {
+                            transformationName = new StringBuilder(part);
+                        }
+                        else
+                        {
+                            transformationName.Append(Conventions.Default.NameSeparator);
+                            transformationName.Append(part);
+                        }
+                        var transformFile = originalFile.Replace(ConventionFileExtension, "." + transformationName + ".");
                         if (PerformTransform(sourceFile, transformFile, destinationFileTemp))
                         {
-                            transformations.Add(transformationName);
+                            transformations.Add(transformationName.ToString());
                         }
                         sourceFile = destinationFileTemp;
                     }
