@@ -14,7 +14,7 @@ namespace BlogTalkRadio.Tools.CFT
             public string FilenameThatWouldChange { get; private set; }
 
             public DryRunFailedException(string filenameThatWouldChange)
-                :base("Dry run failed. This file should change: " + filenameThatWouldChange)
+                : base("Dry run failed. This file should change: " + filenameThatWouldChange)
             {
                 FilenameThatWouldChange = filenameThatWouldChange;
             }
@@ -200,6 +200,7 @@ namespace BlogTalkRadio.Tools.CFT
 
             var transformTask = new TransformationTask(sourceFile, transformFile);
             transformTask.Execute(destinationFile);
+
             return true;
         }
 
